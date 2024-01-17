@@ -72,17 +72,17 @@ export default class {
     this.document = document
     this.onNavigate = onNavigate
     this.store = store
-    $('#arrow-icon1').click((e) => this.handleShowTickets(e, bills, 1))
-    $('#arrow-icon2').click((e) => this.handleShowTickets(e, bills, 2))
-    $('#arrow-icon3').click((e) => this.handleShowTickets(e, bills, 3))
-    new Logout({ localStorage, onNavigate })
+    $('#arrow-icon1').on("click", (e) => this.handleShowTickets(e, bills, 1))
+    $('#arrow-icon2').on("click", (e) => this.handleShowTickets(e, bills, 2))
+    $('#arrow-icon3').on("click", (e) => this.handleShowTickets(e, bills, 3))
+    new Logout({ document, onNavigate, localStorage })
   }
 
   handleClickIconEye = () => {
     const billUrl = $('#icon-eye-d').attr("data-bill-url")
-    const imgWidth = Math.floor($('#modaleFileAdmin1').width() * 0.8)
-    $('#modaleFileAdmin1').find(".modal-body").html(`<div style='text-align: center;'><img width=${imgWidth} src=${billUrl} alt="Bill"/></div>`)
-    if (typeof $('#modaleFileAdmin1').modal === 'function') $('#modaleFileAdmin1').modal('show')
+    const imgWidth = Math.floor($('#modaleFileAdmin').width() * 0.8)
+    $('#modaleFileAdmin').find(".modal-body").html(`<div style='text-align: center;'><img width=${imgWidth} src=${billUrl} alt="Bill"/></div>`)
+    if (typeof $('#modaleFileAdmin').modal === 'function') $('#modaleFileAdmin').modal('show')
   }
 
   handleEditTicket(e, bill, bills) {
@@ -105,9 +105,9 @@ export default class {
       $('.vertical-navbar').css({ height: '120vh' })
       this.counter ++
     }
-    $('#icon-eye-d').click(this.handleClickIconEye)
-    $('#btn-accept-bill').click((e) => this.handleAcceptSubmit(e, bill))
-    $('#btn-refuse-bill').click((e) => this.handleRefuseSubmit(e, bill))
+    $('#icon-eye-d').on("click", this.handleClickIconEye)
+    $('#btn-accept-bill').on("click", (e) => this.handleAcceptSubmit(e, bill))
+    $('#btn-refuse-bill').on("click", (e) => this.handleRefuseSubmit(e, bill))
   }
 
   handleAcceptSubmit = (e, bill) => {
@@ -146,7 +146,7 @@ export default class {
     }
 
     bills.forEach(bill => {
-      $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills))
+      $(`#open-bill${bill.id}`).on("click", (e) => this.handleEditTicket(e, bill, bills))
     })
 
     return bills

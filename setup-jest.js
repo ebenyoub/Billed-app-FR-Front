@@ -1,2 +1,1 @@
-import $ from 'jquery';
-global.$ = global.jQuery = $;
+global.$ = require('jquery');

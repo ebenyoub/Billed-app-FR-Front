@@ -5,7 +5,9 @@ export default class Logout {
     this.document = document
     this.onNavigate = onNavigate
     this.localStorage = localStorage
-    $('#layout-disconnect').click(this.handleClick)
+
+    const layoutDisconnect = document.getElementById("layout-disconnect")
+    $('#layout-disconnect').on("click", this.handleClick)
   }
   
   handleClick = (e) => {
