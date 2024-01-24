@@ -31,7 +31,7 @@ export const card = (bill) => {
   const firstAndLastNames = bill.email.split('@')[0]
   const firstName = firstAndLastNames.includes('.') ?
     firstAndLastNames.split('.')[0] : ''
-  const lastName = firstAndLastNames.includes('.') ?
+  const lastName = firstAndLastNames.includes('.') ? 
   firstAndLastNames.split('.')[1] : firstAndLastNames
 
   return (`
