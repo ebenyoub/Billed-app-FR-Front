@@ -25,13 +25,13 @@ export default class NewBill {
       const allowedExtensions = ['jpg', 'jpeg', 'png'];
       const fileName = file.name.toLowerCase();
       const fileExtension = fileName.split('.').pop();
-  
+      console.log(file)
       if (allowedExtensions.includes(fileExtension)) {
         const formData = new FormData();
         const email = JSON.parse(localStorage.getItem("user")).email;
         formData.append('file', file);
         formData.append('email', email);
-  
+        console.log(formData)
         this.store
           .bills()
           .create({

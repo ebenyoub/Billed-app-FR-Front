@@ -24,17 +24,21 @@ export default class Login {
       password: e.target.querySelector(`input[data-testid="employee-password-input"]`).value,
       status: "connected"
     }
+
     this.localStorage.setItem("user", JSON.stringify(user))
     this.login(user)
-      .catch(
-        (err) => this.createUser(user)
-      )
-      .then(() => {
-        this.onNavigate(ROUTES_PATH['Bills'])
-        this.PREVIOUS_LOCATION = ROUTES_PATH['Bills']
-        PREVIOUS_LOCATION = this.PREVIOUS_LOCATION
-        this.document.body.style.backgroundColor="#fff"
-      })
+    .then(() => {
+      this.onNavigate(ROUTES_PATH['Bills'])
+      this.PREVIOUS_LOCATION = ROUTES_PATH['Bills']
+      PREVIOUS_LOCATION = this.PREVIOUS_LOCATION
+      this.document.body.style.backgroundColor="#fff"
+    })
+    .catch(
+      (err) => {
+        console.log("On est dans login.catch : createUser")
+        return this.createUser(user)
+      }
+    )
   }
 
   handleSubmitAdmin = e => {
@@ -47,25 +51,25 @@ export default class Login {
     }
     this.localStorage.setItem("user", JSON.stringify(user))
     this.login(user)
-      .catch(
-        (err) => this.createUser(user)
-      )
-      .then(() => {
-        this.onNavigate(ROUTES_PATH['Dashboard'])
-        this.PREVIOUS_LOCATION = ROUTES_PATH['Dashboard']
-        PREVIOUS_LOCATION = this.PREVIOUS_LOCATION
-        document.body.style.backgroundColor="#fff"
-      })
+    .then(() => {
+      this.onNavigate(ROUTES_PATH['Dashboard'])
+      this.PREVIOUS_LOCATION = ROUTES_PATH['Dashboard']
+      PREVIOUS_LOCATION = this.PREVIOUS_LOCATION
+      document.body.style.backgroundColor="#fff"
+    })
+    .catch(err => this.createUser(user))
   }
 
   // not need to cover this function by tests
   login = (user) => {
+    console.log(user)
     if (this.store) {
       return this.store
       .login(JSON.stringify({
         email: user.email,
         password: user.password,
-      })).then(({jwt}) => {
+      }))
+      .then(({jwt}) => {
         localStorage.setItem('jwt', jwt)
       })
     } else {
@@ -75,6 +79,7 @@ export default class Login {
 
   // not need to cover this function by tests
   createUser = (user) => {
+    console.log("on est dans createUSer")
     if (this.store) {
       return this.store
       .users()
@@ -89,6 +94,7 @@ export default class Login {
         return this.login(user)
       })
     } else {
+      console.log("On et dans le else")
       return null
     }
   }

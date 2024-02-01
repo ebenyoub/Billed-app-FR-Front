@@ -23,7 +23,7 @@ class Api {
 }
 
 const getHeaders = (headers) => {
-  const h = { }
+  const h = {}
   if (!headers.noContentType) h['Content-Type'] = 'application/json'
   const jwt = localStorage.getItem('jwt')
   if (jwt && !headers.noAuthorization) h['Authorization'] = `Bearer ${jwt}`
@@ -45,6 +45,7 @@ class ApiEntity {
     return await (this.api.patch({url: `/${this.key}/${selector}`, headers: getHeaders(headers), data}))
   }
   async create({data, headers = {}}) {
+    console.log(data)
     return await (this.api.post({url: `/${this.key}`, headers: getHeaders(headers), data}))
   }
   async delete({selector, headers = {}}) {
@@ -61,7 +62,10 @@ class Store {
 
   user = uid => (new ApiEntity({key: 'users', api: this.api})).select({selector: uid})
   users = () => new ApiEntity({key: 'users', api: this.api})
-  login = (data) => this.api.post({url: '/auth/login', data, headers: getHeaders({noAuthorization: true})})
+  login = (data) => {
+    console.log(data)
+    return this.api.post({url: '/auth/login', data, headers: getHeaders({noAuthorization: true})})
+  }
 
   ref = (path) => this.store.doc(path)
 

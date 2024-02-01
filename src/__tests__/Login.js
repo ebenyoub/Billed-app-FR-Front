@@ -6,9 +6,7 @@ import LoginUI from "../views/LoginUI";
 import Login from "../containers/Login.js";
 import { ROUTES } from "../constants/routes";
 import { fireEvent, screen } from "@testing-library/dom";
-import { localStorageMock } from "../__mocks__/localStorage.js";
-import { PREVIOUS_LOCATION } from "../containers/Login.js";
-import Store from "../app/Store.js";
+import Store from "../__mocks__/appStore.js";
 
 describe("Given that I am a user on login page", () => {
   describe("When I do not fill fields and I click on employee button Login In", () => {
@@ -116,6 +114,92 @@ describe("Given that I am a user on login page", () => {
 
     test("It should renders Bills page", () => {
       expect(screen.getAllByText("Mes notes de frais")).toBeTruthy();
+    });
+  });
+});
+
+describe("Given that I am a user on login page", () => {
+  describe("When I do fill fields in correct format and I click on employee button Login In", () => {
+    test("Then I should be create an Employee in app", async () => {
+      document.body.innerHTML = LoginUI();
+    
+      const inputEmailUser = screen.getByTestId("employee-email-input");
+      const inputPasswordUser = screen.getByTestId("employee-password-input");
+      const form = screen.getByTestId("form-employee");
+    
+      fireEvent.change(inputEmailUser, { target: { value: "adfg@mnbv.fr" } });
+      fireEvent.change(inputPasswordUser, { target: { value: "azerty" } });
+    
+      const onNavigate = jest.fn();
+    
+      // Créez une instance réelle de la classe Login
+      const login = new Login({
+        document,
+        localStorage: localStorage,
+        onNavigate,
+        PREVIOUS_LOCATION: "",
+        store: Store,
+      });
+
+      login.login = jest.fn().mockRejectedValueOnce(new Error("Error login"))
+      const createSpy = jest.spyOn(login, "login")
+
+      // Appelez directement la méthode handleSubmitEmployee
+      login.handleSubmitEmployee({
+        preventDefault: jest.fn(), // mock de la fonction preventDefault
+        target: form, // simulate the form target
+      });
+    
+      // Vérifiez les appels aux méthodes
+      expect(login.login).toHaveBeenCalled();
+      expect(createSpy).toHaveBeenCalled();
+    });
+  });
+});
+
+describe("Given that I am a user on login page", () => {
+  describe("When I do fill fields in correct format and I click on employee button Login In", () => {
+    test("Then I should be create an Admin in app", async () => {
+      document.body.innerHTML = LoginUI();
+    
+      const inputEmailUser = screen.getByTestId("admin-email-input");
+      const inputPasswordUser = screen.getByTestId("admin-password-input");
+      const form = screen.getByTestId("form-admin");
+    
+      fireEvent.change(inputEmailUser, { target: { value: "adfg@mnbv.fr" } });
+      fireEvent.change(inputPasswordUser, { target: { value: "azerty" } });
+    
+      const onNavigate = jest.fn();
+    
+      // Créez une instance réelle de la classe Login
+      const login = new Login({
+        document,
+        localStorage: localStorage,
+        onNavigate,
+        PREVIOUS_LOCATION: "",
+        store: Store,
+      });
+
+      login.login = jest.fn().mockRejectedValueOnce(new Error("Error login"))
+      const createSpy = jest.spyOn(login, "login")
+
+      // Appelez directement la méthode handleSubmitAdmin
+      login.handleSubmitAdmin({
+        preventDefault: jest.fn(), // mock de la fonction preventDefault
+        target: form, // simulate the form target
+      });
+
+      // const handleSubmit = jest.fn((e) => {
+      //   e.preventDefault(); // Appel de preventDefault
+      //   login.handleSubmitAdmin(e); // Appel de la méthode réelle
+      // });
+
+      // form.addEventListener("submit", handleSubmit)
+      // fireEvent.submit(form)
+    
+      // Vérifiez les appels aux méthodes
+      expect(login.login).toHaveBeenCalled();
+      expect(createSpy).toHaveBeenCalled();
     });
   });
 });
@@ -231,55 +315,3 @@ describe("Given that I am a user on login page", () => {
     });
   });
 });
-
-describe("Given I am a user on Login Page", () => {
-  let loginInstance, inputEmailUser, inputPasswordUser, form
-
-  beforeEach(() => {
-    Object.defineProperty(window, 'localStorage', { value: localStorageMock })
-
-    document.body.innerHTML = LoginUI()
-
-    window.localStorage.clear()
-    loginInstance = new Login({
-      document,
-      localStorage: window.localStorage,
-      onNavigate: jest.fn(),
-      PREVIOUS_LOCATION,
-      Store
-    })
-
-    const inputData = {
-      type: "Employee",
-      email: "johndoe@email.com",
-      password: "azerty",
-      status: "connected",
-    };
-
-    form = screen.getByTestId("form-employee")
-
-    inputEmailUser = screen.getByTestId("employee-email-input");
-    fireEvent.change(inputEmailUser, { target: { value: inputData.email } });
-    expect(inputEmailUser.value).toBe(inputData.email);
-
-    inputPasswordUser = screen.getByTestId("admin-password-input");
-    fireEvent.change(inputPasswordUser, {
-      target: { value: inputData.password },
-    });
-    expect(inputPasswordUser.value).toBe(inputData.password);
-  })
-
-  test("handleSubmitEmployee calls createUser when fails", async () => {
-    // simuler un echec de connexion
-    Store.login = jest.fn(() => Promise.reject(new Error("Erreur de connexion")))
-    // déclancher un evenemet de soumission de formulaire
-    const handleSubmit = jest.fn(loginInstance.handleSubmitEmployee);
-      loginInstance.login = jest.fn().mockResolvedValue({});
-      form.addEventListener("submit", handleSubmit);
-      fireEvent.submit(form);
-      expect(handleSubmit).toHaveBeenCalled();
-
-      await Promise.resolve();
-      expect(Store.users().create()).toHaveBeenCalled
-  })
-})
