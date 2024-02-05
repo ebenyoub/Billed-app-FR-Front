@@ -20,18 +20,15 @@ export default class NewBill {
     e.preventDefault();
     const fileInput = this.document.querySelector(`input[data-testid="file"]`);
     const file = fileInput.files[0];
-  
     if (file) {
       const allowedExtensions = ['jpg', 'jpeg', 'png'];
       const fileName = file.name.toLowerCase();
       const fileExtension = fileName.split('.').pop();
-      console.log(file)
       if (allowedExtensions.includes(fileExtension)) {
         const formData = new FormData();
         const email = JSON.parse(localStorage.getItem("user")).email;
         formData.append('file', file);
         formData.append('email', email);
-        console.log(formData)
         this.store
           .bills()
           .create({
@@ -41,12 +38,13 @@ export default class NewBill {
             }
           })
           .then(({ fileUrl, key }) => {
-            console.log(fileUrl);
             this.billId = key;
             this.fileUrl = fileUrl;
             this.fileName = fileName;
           })
-          .catch(error => console.error(error));
+          .catch(error => {
+            console.error(error);
+          })
       } else {
         console.error('Le fichier doit être au format jpg, jpeg ou png.');
       }

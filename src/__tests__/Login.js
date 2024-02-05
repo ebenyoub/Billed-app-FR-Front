@@ -7,6 +7,7 @@ import Login from "../containers/Login.js";
 import { ROUTES } from "../constants/routes";
 import { fireEvent, screen } from "@testing-library/dom";
 import Store from "../__mocks__/appStore.js";
+import userEvent from "@testing-library/user-event";
 
 describe("Given that I am a user on login page", () => {
   describe("When I do not fill fields and I click on employee button Login In", () => {
@@ -130,13 +131,11 @@ describe("Given that I am a user on login page", () => {
       fireEvent.change(inputEmailUser, { target: { value: "adfg@mnbv.fr" } });
       fireEvent.change(inputPasswordUser, { target: { value: "azerty" } });
     
-      const onNavigate = jest.fn();
-    
       // Créez une instance réelle de la classe Login
       const login = new Login({
         document,
         localStorage: localStorage,
-        onNavigate,
+        onNavigate: jest.fn(),
         PREVIOUS_LOCATION: "",
         store: Store,
       });
@@ -164,18 +163,15 @@ describe("Given that I am a user on login page", () => {
     
       const inputEmailUser = screen.getByTestId("admin-email-input");
       const inputPasswordUser = screen.getByTestId("admin-password-input");
-      const form = screen.getByTestId("form-admin");
+      const btn = screen.getByTestId("admin-login-button")
     
       fireEvent.change(inputEmailUser, { target: { value: "adfg@mnbv.fr" } });
       fireEvent.change(inputPasswordUser, { target: { value: "azerty" } });
     
-      const onNavigate = jest.fn();
-    
-      // Créez une instance réelle de la classe Login
       const login = new Login({
         document,
         localStorage: localStorage,
-        onNavigate,
+        onNavigate: jest.fn(),
         PREVIOUS_LOCATION: "",
         store: Store,
       });
@@ -183,19 +179,11 @@ describe("Given that I am a user on login page", () => {
       login.login = jest.fn().mockRejectedValueOnce(new Error("Error login"))
       const createSpy = jest.spyOn(login, "login")
 
-      // Appelez directement la méthode handleSubmitAdmin
-      login.handleSubmitAdmin({
-        preventDefault: jest.fn(), // mock de la fonction preventDefault
-        target: form, // simulate the form target
-      });
+      const handleSubmit = jest.fn(login.handleSubmitAdmin);
 
-      // const handleSubmit = jest.fn((e) => {
-      //   e.preventDefault(); // Appel de preventDefault
-      //   login.handleSubmitAdmin(e); // Appel de la méthode réelle
-      // });
+      btn.addEventListener("submit", handleSubmit)
 
-      // form.addEventListener("submit", handleSubmit)
-      // fireEvent.submit(form)
+      userEvent.click(btn)
     
       // Vérifiez les appels aux méthodes
       expect(login.login).toHaveBeenCalled();
@@ -283,14 +271,12 @@ describe("Given that I am a user on login page", () => {
 
       let PREVIOUS_LOCATION = "";
 
-      const store = jest.fn();
-
       const login = new Login({
         document,
         localStorage: window.localStorage,
         onNavigate,
         PREVIOUS_LOCATION,
-        store,
+        store: jest.fn(),
       });
 
       const handleSubmit = jest.fn(login.handleSubmitAdmin);
