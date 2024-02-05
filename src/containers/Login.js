@@ -35,7 +35,6 @@ export default class Login {
     })
     .catch(
       (err) => {
-        console.log("On est dans login.catch : createUser")
         return this.createUser(user)
       }
     )
@@ -62,7 +61,6 @@ export default class Login {
 
   // not need to cover this function by tests
   login = (user) => {
-    console.log(user)
     if (this.store) {
       return this.store
       .login(JSON.stringify({
@@ -79,7 +77,6 @@ export default class Login {
 
   // not need to cover this function by tests
   createUser = (user) => {
-    console.log("on est dans createUSer")
     if (this.store) {
       return this.store
       .users()
@@ -94,7 +91,6 @@ export default class Login {
         return this.login(user)
       })
     } else {
-      console.log("On et dans le else")
       return null
     }
   }

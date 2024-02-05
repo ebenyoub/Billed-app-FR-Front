@@ -45,7 +45,6 @@ class ApiEntity {
     return await (this.api.patch({url: `/${this.key}/${selector}`, headers: getHeaders(headers), data}))
   }
   async create({data, headers = {}}) {
-    console.log(data)
     return await (this.api.post({url: `/${this.key}`, headers: getHeaders(headers), data}))
   }
   async delete({selector, headers = {}}) {
@@ -63,7 +62,6 @@ class Store {
   user = uid => (new ApiEntity({key: 'users', api: this.api})).select({selector: uid})
   users = () => new ApiEntity({key: 'users', api: this.api})
   login = (data) => {
-    console.log(data)
     return this.api.post({url: '/auth/login', data, headers: getHeaders({noAuthorization: true})})
   }
 
