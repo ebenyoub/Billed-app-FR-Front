@@ -112,7 +112,7 @@ describe("Given I am connected as an employee", () => {
   })
 
   describe("When an error occurs on API", () => {
-    beforeEach(() => {
+    test("fetches bills from an API and fails with message error", async () => {
       jest.spyOn(store, "bills")
       Object.defineProperty(
         window,
@@ -126,9 +126,6 @@ describe("Given I am connected as an employee", () => {
       root.setAttribute("id", "root")
       document.body.appendChild(root)
       router()
-    })
-    
-    test("fetches bills from an API and fails with message error", async () => {
       store.bills.mockImplementationOnce(() => {
         return {
           list: () => {

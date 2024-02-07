@@ -24,24 +24,28 @@ describe('Given I am connected as an Admin', () => {
       expect(filtered_bills.length).toBe(1)
     })
   })
+
   describe('When I am on Dashboard page, there are bills, and there is one accepted', () => {
     test('Then, filteredBills by accepted status should return 1 bill', () => {
       const filtered_bills = filteredBills(bills, "accepted")
       expect(filtered_bills.length).toBe(1)
     })
   })
+
   describe('When I am on Dashboard page, there are bills, and there is two refused', () => {
     test('Then, filteredBills by accepted status should return 2 bills', () => {
       const filtered_bills = filteredBills(bills, "refused")
       expect(filtered_bills.length).toBe(2)
     })
   })
+
   describe('When I am on Dashboard page but it is loading', () => {
     test('Then, Loading page should be rendered', () => {
       document.body.innerHTML = DashboardUI({ loading: true })
       expect(screen.getAllByText('Loading...')).toBeTruthy()
     })
   })
+  
   describe('When I am on Dashboard page but back-end send an error message', () => {
     test('Then, Error page should be rendered', () => {
       document.body.innerHTML = DashboardUI({ error: 'some error message' })
@@ -202,6 +206,7 @@ describe('Given I am connected as Admin, and I am on Dashboard page, and I click
       expect(bigBilledIcon).toBeTruthy()
     })
   })
+
   describe('When I click on refuse button', () => {
     test('I should be sent on Dashboard with big billed icon instead of form', () => {
       Object.defineProperty(window, 'localStorage', { value: localStorageMock })

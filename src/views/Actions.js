@@ -5,8 +5,11 @@ export default (billUrl) => {
   return (
     `<div class="icon-actions">
       <div id="eye" data-testid="icon-eye" data-bill-url=${billUrl} data-bs-toggle="modal" data-bs-target="#modaleFile">
-      ${eyeBlueIcon}
+        ${eyeBlueIcon}
       </div>
+      <a id="downloadBlue" data-testid="download-blue" href="${billUrl}" download>
+        ${downloadBlueIcon}
+      </a>
     </div>`
   )
 }

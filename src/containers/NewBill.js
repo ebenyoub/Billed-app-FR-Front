@@ -47,6 +47,8 @@ export default class NewBill {
           })
       } else {
         console.error('Le fichier doit être au format jpg, jpeg ou png.');
+        alert('Le fichier doit être au format jpg, jpeg ou png.');
+        fileInput.value = ""
       }
     }
   };
@@ -54,7 +56,6 @@ export default class NewBill {
   
   handleSubmit = e => {
     e.preventDefault()
-    console.log('e.target.querySelector(`input[data-testid="datepicker"]`).value', e.target.querySelector(`input[data-testid="datepicker"]`).value)
     const email = JSON.parse(localStorage.getItem("user")).email
     const bill = {
       email,
