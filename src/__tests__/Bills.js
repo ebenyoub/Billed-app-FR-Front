@@ -73,7 +73,7 @@ describe("Given I am connected as an employee", () => {
       expect(screen.getByTestId("content-title").innerHTML).toBe(" Envoyer une note de frais ")
     })
 
-    test(", it should open the modale", async () => {
+    test("when I click on an iconEye, it should open the modale", async () => {
       const iconEyes = screen.getAllByTestId("icon-eye")[0]
       const modaleFile = screen.getByTestId("modaleFile")
       const handleClickIconEye = jest.fn(icon => billPage.handleClickIconEye(icon))
@@ -92,7 +92,7 @@ describe("Given I am connected as an employee", () => {
       const mockStoreError = {
         bills: jest.fn(() => ({
           list: jest.fn(() => Promise.resolve([{
-            "status": "accepted",
+            "status": "refused",
             "date": "wrong date",
           }])),
         })),
@@ -105,8 +105,7 @@ describe("Given I am connected as an employee", () => {
       })
       const billsData = await billInstance.getBills()
       billsData.map(bill => {
-        expect(bill.date).toBe(bill.date)
-        expect(bill.status).toBe("Accepté")
+        expect(bill.status).toBe("Refusé")
       })
     })
   })
