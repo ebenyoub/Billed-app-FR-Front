@@ -52,7 +52,7 @@ describe("Given I am connected as an employee", () => {
     test("Then bills should be ordered from earliest to latest", async () => {
       const datas = await billPage.getBills()
       document.body.innerHTML = BillsUI({ data: datas });
-      // On récupère les dates affichées sur le DOM
+      // On récupère les dates affichées sur le DOM au format 01 fev. 24
       const datesOnScreen = screen.getAllByText(/(\d{1,2} [a-zA-Zéû]+\. \d{2})/).map(a => a.innerHTML);
       // On récupère les dates stockées dans la fixture et on les formate
       const datesFixtures = bills.map(bill => bill.date)

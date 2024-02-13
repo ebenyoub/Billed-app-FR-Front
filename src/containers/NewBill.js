@@ -21,9 +21,11 @@ export default class NewBill {
     const fileInput = this.document.querySelector(`input[data-testid="file"]`);
     const file = fileInput.files[0];
     if (file) {
+      // ici les extensions acceptées
       const allowedExtensions = ['jpg', 'jpeg', 'png'];
       const fileName = file.name.toLowerCase();
       const fileExtension = fileName.split('.').pop();
+      // si le fichier a une bonne extension, ok, sinon, message d'erreur
       if (allowedExtensions.includes(fileExtension)) {
         const formData = new FormData();
         const email = JSON.parse(localStorage.getItem("user")).email;
