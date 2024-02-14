@@ -13,11 +13,23 @@ describe('Given I am connected on app (as an Employee or an HR admin)', () => {
       expect(screen.getAllByText('Erreur')).toBeTruthy()
       expect(screen.getByTestId('error-message').innerHTML.trim().length).toBe(0)
     })
-  })
-  
-  describe('When ErrorPage is called with error message in its signature', () => {
+
     test(('Then, it should render ErrorPage with its error message'), () => {
       const error = 'Erreur de connexion internet'
+      const html = ErrorPage(error)
+      document.body.innerHTML = html
+      expect(screen.getAllByText(error)).toBeTruthy()
+    })
+
+    test(('Then, it should render ErrorPage with its error 404'), () => {
+      const error = 'Erreur 404'
+      const html = ErrorPage(error)
+      document.body.innerHTML = html
+      expect(screen.getAllByText(error)).toBeTruthy()
+    })
+
+    test(('Then, it should render ErrorPage with its error 500'), () => {
+      const error = 'Erreur 500'
       const html = ErrorPage(error)
       document.body.innerHTML = html
       expect(screen.getAllByText(error)).toBeTruthy()

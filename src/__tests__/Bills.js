@@ -7,13 +7,14 @@ import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom";
 
 import { bills } from "../fixtures/bills.js"
-import { ROUTES_PATH } from "../constants/routes.js";
+import { ROUTES, ROUTES_PATH } from "../constants/routes.js";
 import { localStorageMock } from "../__mocks__/localStorage.js";
 import { formatDate } from "../app/format.js";
 import BillsUI from "../views/BillsUI.js"
 import Bill from "../containers/Bills.js";
 import router from "../app/Router.js";
 import store from "../__mocks__/store.js";
+import ErrorPage from "../views/ErrorPage.js";
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on Bills Page", () => {
@@ -25,7 +26,7 @@ describe("Given I am connected as an employee", () => {
       window.localStorage.setItem('user', JSON.stringify({
         type: 'Employee'
       }))
-      
+
       const root = document.createElement("div")
       root.setAttribute("id", "root")
       document.body.append(root)
@@ -109,33 +110,58 @@ describe("Given I am connected as an employee", () => {
       })
     })
   })
-
-  describe("When an error occurs on API", () => {
-    test("fetches bills from an API and fails with message error", async () => {
-      jest.spyOn(store, "bills")
-      Object.defineProperty(
-        window,
-        'localStorage',
-        { value: localStorageMock }
-      )
-      window.localStorage.setItem('user', JSON.stringify({
-        type: 'Employee',
-      }))
-      const root = document.createElement("div")
-      root.setAttribute("id", "root")
-      document.body.appendChild(root)
-      router()
-      store.bills.mockImplementationOnce(() => {
-        return {
-          list: () => {
-            return Promise.reject(new Error("Erreur"))
-          }
-        }
-      })
-      window.onNavigate(ROUTES_PATH.Bills)
-      await new Promise(process.nextTick);
-      const message = screen.getByText(/Erreur/)
-      expect(message).toBeTruthy()
-    })
-  })
 })
+
+describe("When an error occurs on API", () => {
+
+  test("fetches bills from an API and fails with 404 message error", async () => {
+    const errorMsg = "Erreur 404: ressource non trouvée."
+    // l'api renvoie un message 404 s'il ne trouve pas la ressource demandée
+    const mockStoreError = {
+      bills: jest.fn(() => ({
+        list: jest.fn().mockRejectedValueOnce(new Error(errorMsg)),
+      })),
+    };
+
+    const billPage = new Bill({
+      document,
+      onNavigate,
+      store: mockStoreError,
+      localStorage: window.localStorage
+    })
+
+    // on appelle getBills(), mais la methode list nous renvoie une erreur
+    await billPage
+      .getBills()
+      .catch(error => document.body.innerHTML = ErrorPage(error))
+
+    // la page erreur du DOM est injectée et affiche le message d'erreur
+    const messageOnPage = screen.getByTestId("error-message")
+    expect(messageOnPage.innerHTML.trim()).toBe(`Error: ${errorMsg}`)
+  });
+
+  test("fetches bills from an API and fails with 500 message error", async () => {
+    const errorMsg = "Erreur 500: erreur interne du serveur."
+    const mockStoreError = {
+      bills: jest.fn(() => ({
+        list: jest.fn().mockRejectedValueOnce(new Error(errorMsg)),
+      })),
+    };
+
+    const billPage = new Bill({
+      document,
+      onNavigate,
+      store: mockStoreError,
+      localStorage: window.localStorage
+    })
+
+    await billPage
+      .getBills()
+      .catch(error => document.body.innerHTML = ErrorPage(error))
+
+    const messageOnPage = screen.getByTestId("error-message")
+    expect(messageOnPage.innerHTML.trim()).toBe(`Error: ${errorMsg}`)
+  });
+});
+
+
